@@ -1,0 +1,85 @@
+@(artists: List[models.Artist], genres: List[models.Genre], user: models.users.User)
+
+<!-- Pass page title and content {html between braces} to the main view -->
+@admin.adminMain("Artists", user) {
+  <!-- HTML content for the index view -->
+  <div class="row">
+      <div class="col-sm-2">
+          <h4>Genres</h4>
+            <div class="list-group">
+                <!-- A link to display all products -->
+                <a href="@routes.AdminController.artists(0)" class="list-group-item">All Genres</a>
+
+                <!-- Start of For loop - For each c in categories add a list item -->
+                <!-- Also show the number of products in each category -->
+                @for(g <- genres) {
+                    <a href="@routes.AdminController.artists(g.getId)" class="list-group-item">@g.getGenre
+                      <span class="badge">@g.getArtist.size()</span>
+                    </a>
+                }
+            </div>
+      </div>
+      <div class="col-sm-10">
+
+          @if(flash.containsKey("success")) {
+              <div class="alert alert-success">
+              @flash.get("success")
+              </div>
+          }
+          <table class="table table-bordered table-hover table-condensed">
+          <thead>
+          <!-- The header row-->
+          <tr>
+            <th>ID</th>
+            <th>Artist</th>
+            <th>Genre</th>
+            <th>Venue</th>
+            <th>Seats</th>
+            <th>Price</th>
+          </tr>
+          </thead>
+          <tbody>
+            <!-- Product row(s) -->
+					<!-- Start of For loop - For each p in products add a row -->
+          @for(a <- artists) {
+			        <tr>
+                  <td>@a.getId</td>
+                  <td>@a.getArtist</td>
+                  <td>@a.getGenre.getGenre</td>
+                  <td>@a.getVenue</td>
+                  <td>@a.getSeats</td>
+                  <td>&euro; @("%.2f".format(a.getPrice))</td>
+
+                  <!-- Edit product button -->
+                  <td>
+                      <a href="@routes.AdminController.updateArtist(a.getId)" class="btn-xs btn-danger">
+                      <span class="glyphicon glyphicon-pencil"></span></a>
+                  </td>
+                  <!-- Delete product button -->
+                  <td>
+                      <a href="@routes.AdminController.deleteArtist(a.getId)" class="btn-xs btn-danger"
+                        onclick="return confirmDel();">
+                        <span class="glyphicon glyphicon-trash"></span>
+                      </a>
+                  </td>
+				    </tr>
+					} <!-- End of For loop -->
+          </tbody>
+        </table>
+        <p>
+          <a href="@routes.AdminController.addArtist()">
+            <button class="btn btn-primary">Add an Artist</button>
+          </a>
+        </p>
+      </div>
+  </div>
+
+  <script>
+    // JavaScript function returns true if user clicks yes, otherwise, false
+    function confirmDel() {
+        return confirm('Are you sure?');
+    }
+  </script>
+
+  <!-- End of content for main -->
+}

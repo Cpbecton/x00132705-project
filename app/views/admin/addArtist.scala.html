@@ -1,0 +1,41 @@
+@* addArtistForm defined above is the parameter passed to this view by the controller *@
+@import helper._
+
+@(addArtistForm: play.data.Form[models.Artist], user: models.users.User)
+
+@* helpers will be used to create the form dynamically, though static HTML form element also work. *@
+
+@admin.adminMain("Add Artist", user) {
+	<h3>Add a new Artist</h3>
+	
+	<!-- Use the views.html.helpers package to create the form -->
+	@form(action = routes.AdminController.addArtistSubmit(), 'class -> "form-horizontal", 'role->"form") {
+		
+		<!-- Build the form, adding an input for each field -->
+		<!-- Note the label parameter -->
+		@inputText(addArtistForm("artist"), '_label -> "Artist",'class -> "form-control")
+		@inputText(addArtistForm("venue"), '_label -> "Venue",'class -> "form-control")
+
+		@select(
+			addArtistForm("genre.id"),
+			
+			options(Genre.options),
+			'_label -> "genre", '_default -> "-- Choose a genre --",
+			'_showConstraints -> false, 'class -> "form-control"
+		)
+		@inputText(addArtistForm("seats"), '_label -> "Seats",'class -> "form-control")
+		@inputText(addArtistForm("price"), '_label -> "Price",'class -> "form-control")
+
+		<!-- Hidden ID field - required for product updates -->
+		@inputText(addArtistForm("id"), '_label -> "", 'hidden -> "hidden")
+
+	<!-- Add a submit button -->
+  <div class="actions">
+      <input type="submit" value="Save" class="btn btn-primary">
+			<a href="@routes.AdminController.artists()"><button class="btn btn-warning">Cancel</button>
+	  		</a>
+  </div>
+	} <!-- End Form definition -->
+
+} <!-- End of page content -->
+
